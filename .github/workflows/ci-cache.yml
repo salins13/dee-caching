@@ -1,0 +1,34 @@
+name: CI with Cache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Prime the cache (REQUIRED step)
+      - name: prime-cache-cb21e29
+        id: cache-step
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/my-dependencies
+          key: cache-cb21e29
+
+      # Echo cache hit/miss result (REQUIRED)
+      - name: Show cache result
+        run: |
+          echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
+
+      # Example step that uses the cached dependencies
+      - name: Install dependencies
+        run: |
+          mkdir -p ~/.cache/my-dependencies
+          echo "Simulating dependency installation..."
+          echo "some-dependency" > ~/.cache/my-dependencies/deps.txt
